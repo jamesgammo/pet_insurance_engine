@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build: . # Dockerfile is in the current directory
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - mongodb
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:password@postgres/dbname
+      - MONGO_URL=mongodb://mongodb:27017
+
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dbname
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:5.0
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  postgres_data:
+  mongo_data:
